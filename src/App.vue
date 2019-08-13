@@ -33,7 +33,7 @@
       </div>
       <div class="cell-right">
         <task-work-area width=1000 height=600 :id="work_id" :ini="ini_config" v-on:on-add-nodemodel="onAddNodeModel" v-on:on-mouse="mouseMenu" ref="area">
-          <task-curve-path :areaid="work_id" :paths="paths" ref="curve" v-on:on-mouse="mouseFn" v-on:on-mouse-over="mouseOverFn" v-on:on-mouse-out="mouseOutFn"></task-curve-path>
+          <task-curve-path :areaid="work_id" :paths="paths" ref="curve" v-on:on-mouse="mouseFn" v-on:on-mouse-over="mouseOverFn" v-on:on-mouse-out="mouseOutFn" v-on:on-click="clickFn"></task-curve-path>
           <template v-for="node in nodes">
             <task-common-node :key="node.id" :node="node" v-on:on-add-path="addPath" v-on:on-select="selectlMethod" v-on:on-drag-start="dragStart" v-on:on-drag-ging="dragGing" v-on:on-drag-end="dragEnd" :updateTem="updateCompleted" v-on:on-mouse="mouseNodeMenu"></task-common-node>
           </template>
@@ -285,7 +285,10 @@ export default {
     },
     mouseNodeMenu: function (event, node) {
       console.log('mouseNodeMenu', 'on-mouse', '节点右击事件', event, node)
-    }
+    },
+    clickFn: function (event, portData) {
+      console.log('clickFn', '鼠标左击路径事件', event, portData)
+    },
   }
 }
 </script>

@@ -6,7 +6,7 @@ const state = {
     pathType: 'Q',
     dotted: false,
     scaling: {ZoomX: 1, ZoomY: 1}
-  }
+  },
 }
 const getters = {
   getViPathingData () {

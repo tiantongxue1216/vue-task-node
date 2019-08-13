@@ -1,7 +1,7 @@
 <template>
   <g ref="gss">
     <template v-if="con.length > 0" v-for="(item,index) in con">
-      <t-line :key="index" :portData="item" v-on:on-mouse="mouseFn" v-on:on-mouse-over="mouseOverFn" v-on:on-mouse-out="mouseOutFn">
+      <t-line :key="index" :portData="item" :isSelected="(findIndexOfPath(selectedPaths,item) !== -1) ? true : false" v-on:on-mouse="mouseFn" v-on:on-mouse-over="mouseOverFn" v-on:on-mouse-out="mouseOutFn" v-on:on-click="clickFn">
       </t-line>
     </template>
       <t-line v-if="path.isShow" :portData="path">
@@ -10,7 +10,9 @@
 </template>
 <script>
 import TLine from './tline.vue'
-
+import { format } from 'util';
+import { fail } from 'assert';
+import { truncate } from 'fs';
 export default {
   components: {TLine},
   name: 'CurvePath',
@@ -22,7 +24,11 @@ export default {
   },
   data () {
     return {
-      con: []
+      con: [],
+      selectedPaths: [],//选中的path
+      deleteIsDown: false,
+      shiftIsDown: false,
+      ctrlIsDown: false,
     }
   },
   watch: {
@@ -41,12 +47,43 @@ export default {
       pa.dotted = this.$store.getters.getViConfig.isDotted
       pa.ptype = this.$store.getters.getViConfig.lineType
       return pa
+    },
+    IsShiftOrCtrDown: function () {
+      return this.shiftIsDown || this.ctrlIsDown
     }
   },
   mounted: function () {
     this.vReload()
+    document.addEventListener('keydown', this.checkKeyDown)
+    document.addEventListener('keyup', this.checkKeyUp)
   },
   methods: {
+    checkKeyDown(e) {
+      let event = window.event || e
+      let code = event.which || event.keyCode
+      if(code === 46) {//delete
+        this.deleteIsDown = true
+      }
+      if(code === 16) {//shift或者ctrl
+        this.shiftIsDown = true
+      }
+      if(code === 17) {
+        this.ctrlIsDown = true
+      }
+    },
+    checkKeyUp(e) {
+      let event = window.event || e
+      let code = event.which || event.keyCode
+      if(code === 46) {
+        this.deleteIsDown = false
+      }
+      if(code === 16) {
+        this.shiftIsDown = false
+      }
+      if(code === 17) {
+        this.ctrlIsDown = false
+      }
+    },
     vReload () {
       let me = this
       this.con = []
@@ -96,6 +133,15 @@ export default {
       }
       return obj
     },
+    clickFn (event, portData) {
+      if(this.IsShiftOrCtrDown) {
+        this.selectedPaths.push(portData)
+      }else {
+        this.selectedPaths = []
+        this.selectedPaths[0] = portData
+      }
+      this.$emit('on-click', event, portData)
+    },
     mouseFn (event, portData) {
       this.$emit('on-mouse', event, portData)
     },
@@ -104,7 +150,19 @@ export default {
     },
     mouseOutFn (event, portData) {
       this.$emit('on-mouse-out', event, portData)
+    },
+    //判断当前path在selectedPaths中index
+    findIndexOfPath(selectedPaths, currPath) {
+      let resIndex = -1
+      for(let index in selectedPaths) {
+        if((selectedPaths[index].startPort === currPath.startPort) && (selectedPaths[index].endPort === currPath.endPort)) {
+          resIndex = index
+          break
+        }
+      }
+      return resIndex
     }
+
   }
 }
 </script>

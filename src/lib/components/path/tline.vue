@@ -2,7 +2,7 @@
   <g :class="classes">
     <path :class="conWrapCls" ref="wrap" :d="lpath">
     </path>
-    <path :class="conCls" ref="con" :d="lpath" @contextmenu.prevent="mouseFn">
+    <path :class="conCls" ref="con" :d="lpath" @contextmenu.prevent="mouseFn" @click="clickFn">
     </path>
   </g>
 </template>
@@ -14,7 +14,7 @@ export default {
   data () {
     return {
       lpath: 'M0 0 Q 0 0, 0 0 T 0 0',
-      isDraw: false
+      isDraw: false,
     }
   },
   props: {
@@ -41,6 +41,10 @@ export default {
       endPort: {
         type: [String, Number]
       }
+    },
+    isSelected: {//path是否被选中
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -58,7 +62,8 @@ export default {
       let me = this
       return [
         `${prefixCls}-con-wrap`,
-        me.portData.dotted ? `${prefixCls}-dotted` : ``
+        me.portData.dotted ? `${prefixCls}-dotted` : ``,
+        me.isSelected ? `${prefixCls}-con-wrap-selected` : ``
       ]
     },
     conWrapHoverCls () {
@@ -100,6 +105,9 @@ export default {
     mouseFn (event) {
       event.stopPropagation()
       this.$emit('on-mouse', event, this.portData)
+    },
+    clickFn (event) {
+      this.$emit('on-click', event, this.portData)
     }
   }
 }

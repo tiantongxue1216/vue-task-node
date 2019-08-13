@@ -1,8 +1,8 @@
 {
-  "name": "vue-task-node",
-  "version": "1.4.0",
-  "description": "TaskNode Plugin! vue-task-node is a Vue based task node mapping plug-in",
-  "author": "wenbing.li",
+  "name": "vue-draggable-taskflow",
+  "version": "1.0.4",
+  "description": "vue-draggable-taskflow Plugin! vue-draggable-taskflow is a Vue based task node mapping plug-in",
+  "author": "omg!!!",
   "license": "MIT",
   "main": "src/lib/index.js",
   "private": false,
@@ -88,5 +88,21 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tiantongxue1216/vue-task-node.git"
+  },
+  "keywords": [
+    "vue",
+    "draggble",
+    "taskflow"
+  ],
+  "bugs": {
+    "url": "https://github.com/tiantongxue1216/vue-task-node/issues"
+  },
+  "homepage": "https://github.com/tiantongxue1216/vue-task-node#readme"
 }
