@@ -1,5 +1,5 @@
 <template>
-  <div :class="classes" ref="svgArea" :style="areaStyles" @contextmenu.prevent="mouseMenu" @dragover.prevent @drop.prevent="onAddNodeModel">
+  <div :class="classes" ref="svgArea" :style="areaStyles" @contextmenu.prevent="mouseMenu" @dragover.prevent @drop.prevent="onAddNodeModel" @mousewheel="onMouseWheel">
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" :width="svgWidth" :height="svgHeight" :id="id">
           <g :transform="'translate(0,0) scale('+ini.scaling.ZoomX+','+ini.scaling.ZoomY+')'">
             <g>
@@ -102,6 +102,9 @@ export default {
     },
     mouseMenu: function (event) {
       this.$emit('on-mouse', event, this.id)
+    },
+    onMouseWheel: function (event) {
+      this.$emit('on-mouse-wheel', event, this.ini)
     },
     onAddNodeModel: function (event) {
       let node = event.dataTransfer.getData('nodemodel')

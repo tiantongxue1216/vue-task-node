@@ -32,7 +32,7 @@
         </ul>
       </div>
       <div class="cell-right">
-        <task-work-area width=1000 height=600 :id="work_id" :ini="ini_config" v-on:on-add-nodemodel="onAddNodeModel" v-on:on-mouse="mouseMenu" ref="area">
+        <task-work-area width=1000 height=600 :id="work_id" :ini="ini_config" v-on:on-add-nodemodel="onAddNodeModel" v-on:on-mouse="mouseMenu" ref="area" v-on:on-mouse-wheel="mouseWheel">
           <task-curve-path :areaid="work_id" :paths="paths" ref="curve" v-on:on-mouse="mouseFn" v-on:on-mouse-over="mouseOverFn" v-on:on-mouse-out="mouseOutFn" v-on:on-click="clickFn"></task-curve-path>
           <template v-for="node in nodes">
             <task-common-node :key="node.id" :node="node" v-on:on-add-path="addPath" v-on:on-select="selectlMethod" v-on:on-drag-start="dragStart" v-on:on-drag-ging="dragGing" v-on:on-drag-end="dragEnd" :updateTem="updateCompleted" v-on:on-mouse="mouseNodeMenu"></task-common-node>
@@ -198,6 +198,8 @@ export default {
     }
   },
   methods: {
+    mouseWheel (event,data) {
+    },
     zoomIn (event) {
       this.ini_config.scaling.ZoomX = this.ini_config.scaling.ZoomX + 0.1
       this.ini_config.scaling.ZoomY = this.ini_config.scaling.ZoomY + 0.1
@@ -221,6 +223,7 @@ export default {
     },
     mouseFn (event, portData) {
       console.log('mouseFn', 'on-mouse', '鼠标右击路径事件', event, portData)
+      this.ini_config.scaling.ZoomX += 0.5
     },
     mouseOverFn (event, portData) {
       console.log('mouseFn', 'on-mouse-over', '鼠标划入路径事件', event, portData)
