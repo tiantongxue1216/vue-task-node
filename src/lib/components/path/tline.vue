@@ -2,7 +2,7 @@
   <g :class="classes">
     <path :class="conWrapCls" ref="wrap" :d="lpath">
     </path>
-    <path :class="conCls" ref="con" :d="lpath" @contextmenu.prevent="mouseFn" @click="clickFn">
+    <path :class="conCls" ref="con" :d="lpath" @contextmenu.prevent="mouseFn">
     </path>
   </g>
 </template>
@@ -63,8 +63,10 @@ export default {
       return [
         `${prefixCls}-con-wrap`,
         me.portData.dotted ? `${prefixCls}-dotted` : ``,
-        me.isSelected ? `${prefixCls}-con-wrap-selected` : ``
       ]
+    },
+    conWrapSelectedCls () {
+      return `${prefixCls}-con-wrap-selected`
     },
     conWrapHoverCls () {
       return [
@@ -77,6 +79,17 @@ export default {
       this.drawCurvePath()
     }
     this.isDraw = false
+  },
+  watch: {
+    isSelected(val) {
+      let wr = this.$refs.wrap
+      if(val) {
+        wr.classList.add(this.conWrapSelectedCls)
+      }else {
+        wr.classList.remove(this.conWrapSelectedCls)
+      }
+    }
+
   },
   mounted: function () {
     this.drawCurvePath()
@@ -94,6 +107,9 @@ export default {
       wr.classList.remove(me.conWrapHoverCls)
       me.$emit('on-mouse-out', wr, me.portData)
     })
+    _this.addEventListener('click', function (event) {
+      me.$emit('on-click', event, me.portData)
+    })
   },
   methods: {
     drawCurvePath () {
@@ -106,9 +122,10 @@ export default {
       event.stopPropagation()
       this.$emit('on-mouse', event, this.portData)
     },
-    clickFn (event) {
-      this.$emit('on-click', event, this.portData)
-    }
+    // clickFn (event) {
+    //   console.log('isSelected', this.isSelected)
+    //   this.$emit('on-click', event, this.portData)
+    // }
   }
 }
 </script>

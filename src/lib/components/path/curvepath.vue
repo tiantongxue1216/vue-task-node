@@ -137,6 +137,7 @@ export default {
       if(this.IsShiftOrCtrDown) {
         this.selectedPaths.push(portData)
       }else {
+        console.log(4444444444,'noshift')
         this.selectedPaths = []
         this.selectedPaths[0] = portData
       }
