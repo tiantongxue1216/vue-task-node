@@ -1,3 +1,5 @@
+import { start } from "pretty-error";
+
 const state = {
   vi_pathing_data: {
     isShow: false
@@ -7,6 +9,10 @@ const state = {
     dotted: false,
     scaling: {ZoomX: 1, ZoomY: 1}
   },
+  curr_portStart: {
+    pid: '',
+    type: ''
+  },
 }
 const getters = {
   getViPathingData () {
@@ -14,7 +20,10 @@ const getters = {
   },
   getViConfig () {
     return state.vi_config
-  }
+  },
+  getCurrPortStart() {
+    return state.curr_portStart
+  },
 }
 const mutations = {
   setMViPathingData (state, name) {
@@ -22,7 +31,11 @@ const mutations = {
   },
   setMViConfig (state, name) {
     state.vi_config = name
-  }
+  },
+  setCurrPortStart (state, name) {
+    state.curr_portStart.pid = name.pid
+    state.curr_portStart.type = name.type
+  },
 }
 const actions = {
   setViPathingData ({commit, state}, name) {

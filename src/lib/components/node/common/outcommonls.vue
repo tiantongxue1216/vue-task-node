@@ -2,7 +2,7 @@
   <div :class="classes">
     <template v-if="out_ports && out_ports.length > 0" v-for="(item,index) in out_ports">
       <div :class="wrapCls" :key='index'>
-        <out-port :pid="item.id"></out-port>
+        <out-port :pid="item.id" :type="item.type"></out-port>
       </div>
     </template>
     <div :class="wrapCls"></div>

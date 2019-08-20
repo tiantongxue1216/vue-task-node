@@ -14,6 +14,7 @@ export default {
   },
   props: {
     pid: [Number, String],
+    type: [Number, String],
     content: {
       type: [String, Number],
       default: '输出'
@@ -47,6 +48,7 @@ export default {
         img.src = './static/img/outicon.png'
         event.dataTransfer.setDragImage(img, 8, 3)
       }
+      this.$store.commit('setCurrPortStart', {pid: this.pid, type: this.type})
       event.dataTransfer.setData('portStart', this.pid)
     },
     dragPortGing: function (event) {

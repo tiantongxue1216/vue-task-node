@@ -103,15 +103,18 @@ export default {
       nodes: [{
         id: 'node1',
         name: '节点1',
+        type: '1',
         positionX: 115,
         positionY: 180,
         state: 'success',
         inPorts: [{
           id: 'node1_1',
+          type: '1',
           isConnected: true
         }],
         outPorts: [{
-          id: 'node1_4'
+          id: 'node1_4',
+          type: '1',
         }]
       }, {
         id: 'node2',
@@ -121,15 +124,19 @@ export default {
         state: 'mistake',
         inPorts: [{
           id: 'node2_1',
+          type: '1',
           isConnected: true
         }, {
           id: 'node2_3',
+          type: '2',
           isConnected: false
         }],
         outPorts: [{
-          id: 'node2_4'
+          id: 'node2_4',
+          type: '1',
         }, {
-          id: 'node2_5'
+          id: 'node2_5',
+          type: '2'
         }]
       }, {
         id: 'node3',
@@ -139,13 +146,16 @@ export default {
         state: 'running',
         inPorts: [{
           id: 'node3_1',
+          type: '1',
           isConnected: true
         }, {
           id: 'node3_3',
+          type: '2',
           isConnected: false
         }],
         outPorts: [{
-          id: 'node3_4'
+          id: 'node3_4',
+          type: '3'
         }]
       }, {
         id: 'node5',
@@ -166,12 +176,15 @@ export default {
         icon: 'task-icon-6',
         inPorts: [{
           id: 'node6_1',
+          type: '1',
           isConnected: false
         }],
         outPorts: [{
-          id: 'node6_2'
+          id: 'node6_2',
+          type: '1'
         }, {
-          id: 'node6_3'
+          id: 'node6_3',
+          type: '2'
         }]
       }],
       paths: [{

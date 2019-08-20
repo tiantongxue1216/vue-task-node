@@ -15,6 +15,7 @@ export default {
   },
   props: {
     pid: [Number, String],
+    type: [Number, String],
     content: {
       type: [String, Number],
       default: '输入'
@@ -42,6 +43,15 @@ export default {
         `${prefixCls}-in`,
         `is-connected`
       ]
+    },
+    isAbleToConnect () {
+      return `${prefixCls}-isAbleToConnect`
+    },
+    unableToConnect () {
+      return `${prefixCls}-unableToConnect`
+    },
+    portStart() {
+      return this.$store.getters.getCurrPortStart
     }
   },
   methods: {
@@ -56,6 +66,14 @@ export default {
       }
     },
     dragPortOver: function (event) {
+      let portDom = document.getElementById(this.pid)
+      if(this.portStart.type === this.type) {
+        console.log('这两个锚点可以连接')
+        portDom.classList.add(this.isAbleToConnect)
+      }else {
+        console.log('这两个锚点类型不同不能连接')
+        portDom.classList.add(this.unableToConnect)
+      }
     },
     dragEnter: function (event) {
       let _this = event.target.parentNode
