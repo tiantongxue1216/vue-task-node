@@ -3,10 +3,11 @@
     :class="classes"
     ref="svgArea"
     :style="areaStyles"
-    @contextmenu.prevent="mouseMenu"
+    @contextmenu.prevent="handleAreaMouseRightClick"
     @dragover.prevent
     @drop.prevent="onAddNodeModel"
     @mousewheel="onMouseWheel"
+    @click="handleAreaClick"
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -16,11 +17,11 @@
       :height="svgHeight"
       :id="id"
     >
-      <g :transform="'translate(0,0) scale('+ini.scaling.ZoomX+','+ini.scaling.ZoomY+')'">
-        <g>
+      <!-- <g> -->
+        <!-- <g> -->
           <slot />
-        </g>
-      </g>
+        <!-- </g> -->
+      <!-- </g> -->
     </svg>
   </div>
 </template>
@@ -92,11 +93,18 @@ export default {
     }
   },
   mounted: function() {
-    let me = this;
-    this.setSvgHW(me);
+    let self = this;
+    this.setSvgHW(self);
     window.onresize = function() {
-      me.setSvgHW(me);
+      self.setSvgHW(self);
+      // self.$root.$children[0].restoreAppEchoWindowResize();
     };
+    // let svg = Snap('#'+this.id)
+    // svg.drag(this.onmove,this.onstart,this.onend)
+    // // svg.drag()
+    // svg.click(function(e,x,y){
+    //   // console.log('点击了画布', svg.getBBox(),e.clientX, e.clientY, e)
+    // })
   },
   methods: {
     setSvgHW: function(me) {
@@ -113,8 +121,18 @@ export default {
         me.svgHeight = me.getBrowserHW().height;
       }
     },
-    mouseMenu: function(event) {
-      this.$emit("on-mouse", event, this.id);
+
+    // onmove() {
+
+    // },
+    // onstart() {
+
+    // },
+    // onend() {
+
+    // },
+    handleAreaMouseRightClick: function(event) {
+      this.$emit("on-area-mouse-right-click", event, this.id);
     },
     onMouseWheel: function(event) {
       this.$emit("on-mouse-wheel", event, this.ini);
@@ -135,7 +153,11 @@ export default {
         ).toFixed(1);
         this.$emit("on-add-nodemodel", event, nodeObj);
       }
+    },
+    handleAreaClick(event) {
+      this.$emit('on-area-click',event)
     }
+
   }
 };
 </script>

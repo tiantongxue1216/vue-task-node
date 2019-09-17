@@ -1,24 +1,30 @@
 <template>
-  <div :class="[isConnected ? isCls:classes]" :id="pid" @dragover.prevent=dragPortOver($event) @drop.prevent='inDropPort($event)' @dragenter="dragEnter" @dragleave="dragLeave">
-      <span :class="magnetCls"></span>
-  </div>
+  <g>
+    <circle :r="r" :cx="cx" cy="0" :stroke="stroke" :stroke-width="stroke_width" :fill="fill" :id="'_'+pid"></circle>
+  </g>
 </template>
 <script>
 
-const prefixCls = 'task-port'
 export default {
   name: 'InPort',
   data () {
     return {
-      className: null
+      r: 4,
+      stroke: '#808080',
+      fill: '#fff',
+      stroke_width: 1,
+      transformData: ''
     }
   },
   props: {
     pid: [Number, String],
     type: [Number, String],
-    content: {
+    typeId: [Number, String],
+    portNum: {
       type: [String, Number],
-      default: '输入'
+      default() {
+        return 1
+      }
     },
     isConnected: {
       type: Boolean,
@@ -26,64 +32,68 @@ export default {
     }
   },
   computed: {
-    classes () {
-      return [
-        `${prefixCls}`,
-        `${prefixCls}-in`
-      ]
+    src_port_ID() {
+      return this.$store.getters.getSrcPortId
     },
-    magnetCls () {
-      return [
-        `${prefixCls}-magnet`
-      ]
+    src_port_type() {
+      return this.$store.getters.getSrcPortType
     },
-    isCls () {
-      return [
-        `${prefixCls}`,
-        `${prefixCls}-in`,
-        `is-connected`
-      ]
-    },
-    isAbleToConnect () {
-      return `${prefixCls}-isAbleToConnect`
-    },
-    unableToConnect () {
-      return `${prefixCls}-unableToConnect`
-    },
-    portStart() {
-      return this.$store.getters.getCurrPortStart
+    cx() {
+      if(this.portNum == 0) {
+        return 0
+      }else if(this.portNum == 1) {
+        return 58.5
+      }else if(this.portNum == 2) {
+        if(this.typeId == 0) {
+          return 39
+        }else if(this.typeId == 1) {
+          return 78
+        }
+      }else if(this.portNum == 3) {
+        if(this.typeId == 0) {
+          return 29.25
+        }else if(this.typeId == 1) {
+          return 58.5
+        }else if(this.typeId == 2) {
+          return 87.75
+        }
+      }else if(this.portNum == 4) {
+        if(this.typeId == 0) {
+          return 23.4
+        }else if(this.typeId == 1) {
+          return 46.8
+        }else if(this.typeId == 2) {
+          return 70.2
+        }else if(this.typeId == 3) {
+          return 93.6
+        }
+      }
     }
   },
-  methods: {
-    inDropPort: function (event) {
-      if (this.className) {
-        let _this = event.target.parentNode
-        _this.className = this.className
-      }
-      let startData = event.dataTransfer.getData('portStart')
-      if (startData) {
-        this.$emit('on-add-path', event, startData, this.pid)
-      }
-    },
-    dragPortOver: function (event) {
-      let portDom = document.getElementById(this.pid)
-      if(this.portStart.type === this.type) {
-        console.log('这两个锚点可以连接')
-        portDom.classList.add(this.isAbleToConnect)
+  mounted() {
+    let self = this
+    let port = Snap('#' + '_'+this.pid)
+    port.mouseup(function(e,x,y) {
+      self.r = 4
+      self.stroke_width = 1
+      self.stroke = "#808080"
+      self.$store.commit('setIfReload')
+      self.$emit('on-add-path',e,self.src_port_ID,self.pid)
+    })
+    port.hover(function() {
+      self.r = 6
+      self.stroke_width= 4
+      if(self.src_port_type == self.type && !this.isConnected) {
+        self.stroke = '#009E49'
       }else {
-        console.log('这两个锚点类型不同不能连接')
-        portDom.classList.add(this.unableToConnect)
+        self.stroke = '#E40000'
       }
-    },
-    dragEnter: function (event) {
-      let _this = event.target.parentNode
-      this.className = _this.className
-      _this.className = 'task-port task-in-out'
-    },
-    dragLeave: function (event) {
-      let _this = event.target.parentNode
-      _this.className = this.className
-    }
+    },function() {
+        self.r = 4
+        self.stroke_width = 1
+        self.stroke = '#808080'
+      }
+    )
   }
 }
 </script>

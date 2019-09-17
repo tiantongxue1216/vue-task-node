@@ -1,28 +1,27 @@
 <template>
-  <div :class="classes">
-    <template v-if="out_ports && out_ports.length > 0" v-for="(item,index) in out_ports">
-      <div :class="wrapCls" :key='index'>
-        <out-port :pid="item.id" :type="item.type"></out-port>
-      </div>
-    </template>
-    <div :class="wrapCls"></div>
-  </div>
+  <g width="100" height="100" style="outline: 2px solid #f0f" transform="translate(0,25)">
+    <out-port v-for="(item, index) in out_ports" :pid="item.id" :type="item.type" :key="index" :portNum="portNum"></out-port>
+  </g>
 </template>
 <script>
 import OutPort from '../../port/outport.vue'
 const prefixCls = 'task-out-common-ls'
 export default {
   components: {
-    OutPort},
+    OutPort
+  },
   name: 'OutCommonLs',
   props: {
     out_ports: {
       type: Array
-    }
+    },
   },
   data () {
     return {
     }
+  },
+  mounted() {
+    console.log('outports', this.out_ports)
   },
   computed: {
     classes () {
@@ -34,6 +33,9 @@ export default {
       return [
         `${prefixCls}-wrap`
       ]
+    },
+    portNum () {
+      return this.out_ports.length
     }
   }
 }

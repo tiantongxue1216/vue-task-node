@@ -29,7 +29,7 @@
 
   &-name {
     float: left;
-    width: 79px;
+    width: 85px;
     height: 26px;
     text-align: center;
     line-height: 26px;
@@ -39,13 +39,12 @@
     white-space: nowrap;
   }
   &-status {
-    width: 26px;
-    height: 26px;
-    margin: 1px;
+    width: 14px;
+    height: 14px;
+    margin-left: 14px;
+    margin-top: 4px;
     border-radius: 100%;
-    float: right;
-    font-size: 18px;
-
+    // float: right;
     &:before{
       float: left;
       margin: 4px;
@@ -53,5 +52,8 @@
   }
   &:hover {
     background-color: @node-select-color ;
+  }
+  &-isRunning {
+    background: #A2D7FF;
   }
 }

@@ -68,17 +68,18 @@ export default {
    * @returns {string} 'M xy Q xy xy Txy'
    */
   drawCurvePath (Mxy = {}, Txy = {}, type = 'Q', scaling) {
-    let scalingMxy = {
-      x: Mxy.x / scaling.ZoomX,
-      y: Mxy.y / scaling.ZoomY
-    }
+    // let scalingMxy = {
+    //   x: Mxy.x / scaling.ZoomX,
+    //   y: Mxy.y / scaling.ZoomY
+    // }
 
-    let scalingTxy = {
-      x: Txy.x / scaling.ZoomX,
-      y: Txy.y / scaling.ZoomY
-    }
+    // let scalingTxy = {
+    //   x: Txy.x / scaling.ZoomX,
+    //   y: Txy.y / scaling.ZoomY
+    // }
     if (type === 'Q') {
-      return this.calculatedCurvePathQ(scalingMxy, scalingTxy)
+      // return this.calculatedCurvePathQ(scalingMxy, scalingTxy)
+      return this.calculatedCurvePathQ(Mxy, Txy)
     } else if (type === 'L') {
       return this.calculatedCurvePathL(scalingMxy, scalingTxy)
     } else if (type === 'ML') {
