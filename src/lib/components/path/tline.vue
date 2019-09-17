@@ -97,30 +97,31 @@ export default {
     let me = this
     // let nameSpace = 'http://www.w3.org/2000/svg'
     let _this = this.$refs.con
-    _this.addEventListener('mouseover', function () {
+    _this.addEventListener('mouseenter', function () {
       let wr = me.$refs.wrap
       wr.classList.add(me.conWrapHoverCls)
-      me.$emit('on-mouse-over', wr, me.portData)
+      me.$emit('on-path-mouse-enter', wr, me.portData)
     })
-    _this.addEventListener('mouseout', function () {
+    _this.addEventListener('mouseleave', function () {
       let wr = me.$refs.wrap
       wr.classList.remove(me.conWrapHoverCls)
-      me.$emit('on-mouse-out', wr, me.portData)
+      me.$emit('on-path-mouse-leave', wr, me.portData)
     })
     _this.addEventListener('click', function (event) {
-      me.$emit('on-click', event, me.portData)
+      me.$emit('on-path-click', event, me.portData)
     })
   },
   methods: {
     drawCurvePath () {
       if (this.portData.Mxy && this.portData.Txy) {
-        this.lpath = Line.drawCurvePath(this.portData.Mxy, this.portData.Txy, this.portData.ptype, this.$store.getters.getViConfig.scaling)
+        this.lpath = Line.drawCurvePath(this.portData.Mxy, this.portData.Txy, this.portData.Q, this.$store.getters.getViConfig.scaling)
       }
       return this.lpath
     },
     mouseFn (event) {
+      console.log('右击连线')
       event.stopPropagation()
-      this.$emit('on-mouse', event, this.portData)
+      this.$emit('on-path-mouse-right-click', event, this.portData)
     },
     // clickFn (event) {
     //   console.log('isSelected', this.isSelected)

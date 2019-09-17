@@ -1,36 +1,38 @@
 <template>
-<g
-  :transform="'translate('+getCheckX(node.positionX)+','+getCheckY(node.positionY)+')'"
+  <g
+  :transform="'translate('+node.positionX+','+node.positionY+')'"
   :class="classes"
 >
   <g transform="scale(1,1)" class="pane-scalable">
     <foreignObject :width="width" :height="height">
-      <body xmlns="http://www.w3.org/1999/xhtml">
         <div
-          @click="selectNodeMethod($event,node,$refs.node)"
           ref="node"
-          draggable="true"
-          @drag="dragGing($event)"
-          @dragstart="dragStart($event)"
-          @dragend="dragEnd($event,node)"
           @contextmenu.prevent="mouseMenu"
+          @mouseover="handleMouseOver"
+          @mouseleave="handleMouseLeave"
         >
           <slot></slot>
         </div>
-      </body>
     </foreignObject>
   </g>
 </g>
 </template>
 <script>
 import mixinsTool from "../../mixins/tool";
+import { truncate } from 'fs';
 const prefixCls = "task-node";
 export default {
   name: "Node",
   mixins: [mixinsTool],
   data() {
     return {
-      store: null
+      store: null,
+      showToolTip: false,
+      nodeDom: {},
+      x: 0,
+      y: 0,
+      initX: 0,
+      initY: 0,
     };
   },
   props: {
@@ -51,6 +53,10 @@ export default {
       positionY: {
         type: [String, Number],
         default: 0
+      },
+      name: {
+        type: [String, Number],
+        default: ''
       }
     }
   },
@@ -59,7 +65,48 @@ export default {
       return [`${prefixCls}`];
     }
   },
+  mounted() {
+    // let self = this
+    // this.nodeDom = Snap('#'+this.node.id)
+    // // this.nodeDom.drag(this.onmove,this.onstart,this.onend)
+    // this.nodeDom.drag()
+    // this.nodeDom.click(function(e,x,y){
+    //   console.log('点击了节点', self.nodeDom.getBBox())
+    // })
+  },
   methods: {
+    onmove(dx,dy,x,y,event) {
+      // this.x = dx
+      // this.y = dy
+      // this.initX = this.initX + dx
+      // this.initY = this.initY + dy
+      // console.log('node在画布的坐标', this.nodeDom.getBBox())
+      let data = {
+        dx,
+        dy,
+        x,
+        y,
+        event,
+        node: this.node
+      }
+      this.$emit("on-drag-ging", data);
+    },
+    onstart(x,y,event) {
+      this.initX = event.clientX
+      this.initY = event.clientY
+      // this.$emit("on-drag-start", event, this.node);
+    },
+    onend(event) {
+      // this.$emit("on-drag-end", event, this.node);
+    },
+    handleMouseOver() {
+      console.log('handleMouseOver')
+      this.showToolTip = true
+    },
+    handleMouseLeave() {
+      console.log('mouvseLeave')
+      this.showToolTip = false
+    },
     getCheckX(X) {
       // 检查是否移出工作区
       let me = this;
@@ -86,16 +133,16 @@ export default {
       }
       return y;
     },
-    dragStart: function(event) {
-      event.dataTransfer.setData("nodedata", JSON.stringify(this.node));
-      this.$emit("on-drag-start", event, this.node);
-    },
-    dragGing: function(event) {
-      this.$emit("on-drag-ging", event);
-    },
-    dragEnd: function(event, node) {
-      this.$emit("on-drag-end", event, node);
-    },
+    // dragStart: function(event) {
+    //   event.dataTransfer.setData("nodedata", JSON.stringify(this.node));
+    //   this.$emit("on-drag-start", event, this.node);
+    // },
+    // dragGing: function(event) {
+    //   this.$emit("on-drag-ging", event);
+    // },
+    // dragEnd: function(event, node) {
+    //   this.$emit("on-drag-end", event, node);
+    // },
     mouseMenu: function(event) {
       event.stopPropagation();
       this.$emit("on-mouse", event, this.node);
@@ -109,3 +156,13 @@ export default {
   }
 };
 </script>
+
+<style lang="less">
+  // .toolTip {
+  //   line-height: 37px;
+  //   background: rgb(255, 0, 0);
+  //   width: 150px;
+  //   height: 37px;
+  //   position: absolute;
+  // }
+</style>

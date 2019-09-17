@@ -1,18 +1,16 @@
 <template>
   <g ref="gss">
     <template v-if="con.length > 0" v-for="(item,index) in con">
-      <t-line :key="index" :portData="item" :isSelected="(findIndexOfPath(selectedPaths,item) !== -1) ? true : false" v-on:on-mouse="mouseFn" v-on:on-mouse-over="mouseOverFn" v-on:on-mouse-out="mouseOutFn" v-on:on-click="clickFn">
+      <t-line :key="index" :portData="item" :isSelected="(findIndexOfPath(selectedPaths,item) !== -1) ? true : false" v-on:on-path-mouse-right-click="handlePathMouseRightClick" v-on:on-path-mouse-enter="handlePathMouseEnter" v-on:on-path-mouse-leave="handlePathMouseLeave" v-on:on-path-click="handlePathClick">
       </t-line>
     </template>
-      <t-line v-if="path.isShow" :portData="path">
+      <t-line v-if="edgeData.isShow" :portData="edgeData">
       </t-line>
   </g>
 </template>
 <script>
+import Snap from 'imports-loader?this=>window,fix=>module.exports=0!snapsvg/dist/snap.svg.js'
 import TLine from './tline.vue'
-import { format } from 'util';
-import { fail } from 'assert';
-import { truncate } from 'fs';
 export default {
   components: {TLine},
   name: 'CurvePath',
@@ -20,7 +18,8 @@ export default {
     paths: {
       type: Array
     },
-    areaid: [String, Number]
+    areaid: [String, Number],
+    clearSelectedPaths: false,
   },
   data () {
     return {
@@ -34,26 +33,35 @@ export default {
   watch: {
     paths (newData, oldData) {
       this.vReload()
-    }
+    },
+    ifReload() {
+      this.vReload()
+    },
+    clearSelectedPaths(value) {
+      if(value) {
+        this.selectedPaths = []
+      }
+    },
   },
   computed: {
-    path: function () {
-      let pa = this.$store.getters.getViPathingData
-      let isShow = pa.isShow
-      if (pa.Mxy) {
-        pa = this.computeXY(pa.Mxy, pa.Txy, true)
-      }
-      pa.isShow = isShow
-      pa.dotted = this.$store.getters.getViConfig.isDotted
-      pa.ptype = this.$store.getters.getViConfig.lineType
-      return pa
+    //new
+    edgeData() {
+      let edgeData = this.$store.getters.getEdgeData
+      return edgeData
     },
     IsShiftOrCtrDown: function () {
       return this.shiftIsDown || this.ctrlIsDown
     },
+    ifReload() {
+      return this.$store.getters.getIfReload
+    }
   },
   mounted: function () {
     this.vReload()
+    // let self = this
+    // let intervalId = setInterval(function() {
+    //   self.vReload()
+    // },1)
     document.addEventListener('keydown', this.checkKeyDown)
     document.addEventListener('keyup', this.checkKeyUp)
   },
@@ -85,13 +93,14 @@ export default {
       }
     },
     vReload () {
-      let me = this
+      console.log('重新加载')
+      let self = this
       this.con = []
       this.paths.forEach((o) => {
-        let vstart = document.getElementById(o.startPort)
-        let vend = document.getElementById(o.endPort)
+        let vstart = Snap('#' + '_' + o.startPort)
+        let vend = Snap('#' + '_' + o.endPort)
         if (vend && vstart) {
-          let obj = me.computeXY(vstart, vend, false)
+          let obj = self.computeXY(vstart, vend, false)
           if (o.dotted) {
             obj.dotted = o.dotted
           }
@@ -100,57 +109,48 @@ export default {
           }
           obj.startPort = o.startPort
           obj.endPort = o.endPort
-          me.con.push(obj)
+          obj.id = o.id
+          self.con.push(obj)
         }
       })
     },
     computeXY (vstart, vend, isBing) {
-      let area = document.getElementById(this.areaid)
       let scaling = this.$store.getters.getViConfig.scaling
       let obj = {}
-      if (isBing) {
-        obj = {
-          Mxy: {
-            x: vstart.x - area.getBoundingClientRect().left,
-            y: vstart.y - area.getBoundingClientRect().top
-          },
-          Txy: {
-            x: vend.x - area.getBoundingClientRect().left,
-            y: vend.y - area.getBoundingClientRect().top
-          }
-        }
-      } else {
-        obj = {
-          Mxy: {
-            x: vstart.getBoundingClientRect().left - area.getBoundingClientRect().left + (5 * scaling.ZoomX),
-            y: vstart.getBoundingClientRect().top - area.getBoundingClientRect().top + (5 * scaling.ZoomY)
-          },
-          Txy: {
-            x: vend.getBoundingClientRect().left - area.getBoundingClientRect().left + (4 * scaling.ZoomX),
-            y: vend.getBoundingClientRect().top - area.getBoundingClientRect().top + 0
-          }
+      obj = {
+        Mxy: {
+          x: vstart.parent().parent().getBBox().x + vstart.parent().getBBox().x + (5 * scaling.ZoomX),
+          y: vstart.parent().parent().getBBox().y + vstart.parent().getBBox().y + (5 * scaling.ZoomY)
+        },
+        Txy: {
+          x: vend.parent().parent().getBBox().x + vend.parent().getBBox().x + (5 * scaling.ZoomX) - 1,
+          y: vend.parent().parent().getBBox().y + vend.parent().getBBox().y + (5 * scaling.ZoomY)
         }
       }
       return obj
     },
-    clickFn (event, portData) {
+    // clearPreviousPath() {
+
+    // },
+    handlePathClick (event, portData) {
       if(this.IsShiftOrCtrDown) {
         this.selectedPaths.push(portData)
       }else {
         this.selectedPaths = []
         this.selectedPaths[0] = portData
       }
-      this.$emit('on-click', event, portData)
+      this.$emit('on-path-click', event, portData)
     },
-    mouseFn (event, portData) {
-      this.$emit('on-mouse', event, portData)
+    handlePathMouseRightClick (event, portData) {
+      this.$emit('on-path-mouse-right-click', event, portData)
     },
-    mouseOverFn (event, portData) {
-      this.$emit('on-mouse-over', event, portData)
+    handlePathMouseEnter (event, portData) {
+      this.$emit('on-path-mouse-enter', event, portData)
     },
-    mouseOutFn (event, portData) {
-      this.$emit('on-mouse-out', event, portData)
+    handlePathMouseLeave (event, portData) {
+      this.$emit('on-path-mouse-leave', event, portData)
     },
+
     //判断当前path在selectedPaths中index
     findIndexOfPath(selectedPaths, currPath) {
       let resIndex = -1

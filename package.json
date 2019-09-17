@@ -1,6 +1,6 @@
 {
   "name": "vue-draggable-taskflow",
-  "version": "1.0.12",
+  "version": "1.0.46",
   "description": "vue-draggable-taskflow Plugin! vue-draggable-taskflow is a Vue based task node mapping plug-in",
   "author": "omg!!!",
   "license": "MIT",
@@ -17,8 +17,10 @@
     "src"
   ],
   "dependencies": {
+    "imports-loader": "^0.8.0",
     "less": "^3.9.0",
     "less-loader": "^4.1.0",
+    "snapsvg": "^0.5.1",
     "vue": "^2.5.2",
     "vuex": "^3.1.1"
   },
