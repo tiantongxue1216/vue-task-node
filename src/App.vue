@@ -227,7 +227,7 @@ export default {
           name: "节点6",
           positionX: 720,
           positionY: 220,
-          status: 'TASK_STATE_RUNNING',
+          status: 'TASK_STATE_NOTCONFIG',
           inPorts: [
             {
               id: "node6_1",

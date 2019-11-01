@@ -216,6 +216,8 @@ export default {
           return "task-icon-waiting";
         case "TASK_STATE_ERROR":
           return "task-icon-failed";
+        case "TASK_STATE_NOTCONFIG":
+          return "task-icon-notConfig"
         default:
           return "";
       }
