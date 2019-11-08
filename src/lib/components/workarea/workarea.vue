@@ -14,15 +14,13 @@
       xmlns="http://www.w3.org/2000/svg"
       xmlns:xlink="http://www.w3.org/1999/xlink"
       version="1.1"
-      :width="svgWidth"
-      :height="svgHeight"
+      :width="width"
+      :height="height"
       :id="id"
     >
-      <!-- <g> -->
-        <g>
-          <slot />
-        </g>
-      <!-- </g> -->
+      <g>
+        <slot />
+      </g>
     </svg>
   </div>
 </template>
@@ -81,19 +79,9 @@ export default {
       return [`${prefixCls}`];
     },
     areaStyles() {
-      let style ={}
-      style.background = '#f00'
-      // let style = {};
-      // if (this.isCssInUnit(this.width) >= 0) {
-      //   style.width = this.width;
-      // } else {
-      //   style.width = `${this.width}px`;
-      // }
-      // if (this.isCssInUnit(this.height) >= 0) {
-      //   style.height = this.height;
-      // } else {
-      //   style.height = `${this.height}px`;
-      // }
+      let style = {};
+      style.width = '100%'
+      style.height = '100%'
       return style;
     },
   },
@@ -103,18 +91,6 @@ export default {
       self.scrollLeft = e.target.scrollLeft
       self.scrollTop = e.target.scrollTop
     })
-
-    this.setSvgHW(self);
-    window.onresize = function() {
-      self.setSvgHW(self);
-      // self.$root.$children[0].restoreAppEchoWindowResize();
-    };
-    // let svg = Snap('#'+this.id)
-    // svg.drag(this.onmove,this.onstart,this.onend)
-    // // svg.drag()
-    // svg.click(function(e,x,y){
-    //   // console.log('点击了画布', svg.getBBox(),e.clientX, e.clientY, e)
-    // })
   },
   methods: {
     setSvgHW: function(me) {
