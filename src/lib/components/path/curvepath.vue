@@ -90,14 +90,12 @@ export default {
       }
     },
     vReload () {
-      console.log('重新加载')
       let self = this
       this.con = []
       this.paths.forEach((o) => {
         let vstart = Snap('#' + '_' + o.startPort)
         let vend = Snap('#' + '_' + o.endPort)
         if (vend && vstart) {
-          console.log('vreload vstart vend', vend, vstart)
           let obj = self.computeXY(vstart, vend, false)
           if (o.dotted) {
             obj.dotted = o.dotted
@@ -125,7 +123,6 @@ export default {
           y: vend.parent().parent().getBBox().y + vend.parent().getBBox().y + (5 * scaling.ZoomY)
         }
       }
-      console.log('computed obj', obj)
       return obj
     },
     // clearPreviousPath() {

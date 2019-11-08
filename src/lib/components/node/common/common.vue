@@ -26,6 +26,7 @@
 
 <script>
 import InPort from "../../port/inport.vue";
+// import mixinsTool from "../../../mixins/tool";
 import OutPort from "../../port/outport.vue";
 
 const prefixCls = "task-common-node";
@@ -35,6 +36,7 @@ export default {
     InPort,
   },
   name: "CommonNode",
+  // mixins: [mixinsTool],
   data() {
     return {
       state: "",
@@ -114,7 +116,6 @@ export default {
           node.classList.add(this.isRunningCls)
       }else {
           node.classList.remove(this.isRunningCls)
-        console.log('isRunningWatcher is false')
       }
     },
     showTooltip(value) {
@@ -128,7 +129,6 @@ export default {
     let self = this
     let nodeDom = Snap('#' + '_' + this.node.id)
     nodeDom.click(function(){
-      console.log('点击了节点', nodeDom.getBBox())
     })
     // nodeDom.drag(this.nodeOnmove, this.nodeOnstart, this.nodeOnend)
     // nodeDom.mouseup(function() {
@@ -137,7 +137,6 @@ export default {
   },
   methods: {
      dragStart: function(event) {
-      console.log('33333333',this.node)
       let data = {
         event,
         node: this.node
@@ -149,7 +148,6 @@ export default {
       this.$emit('on-node-move', event)
     },
     dragEnd: function(event) {
-      console.log('拖动结束')
       // if(this.node_can_move) {
         let data = {
           event,
@@ -162,19 +160,15 @@ export default {
     },
 
     handleNodeSelect(event, node, ref) {
-      console.log('节点被选中')
       this.$emit("on-node-select", event, node, ref)
     },
     handleNodeRightClick(event) {
-      console.log('鼠标右击节点',event)
       this.$emit("on-node-mouse-right-click", event, this.node)
     },
     handleNodeMouseEnter(event) {
-      console.log('mouse enter', event)
       this.$emit("on-mouse-enter", event)
     },
     handleNodeMouseLeave(event) {
-      console.log('mouse leave',event)
       this.$emit("on-mouse-leave", event)
     },
     // nodeOnstart() {
@@ -226,7 +220,7 @@ export default {
     addPath: function (event, src_port_ID, dst_port_ID) {
       this.$emit('on-add-path',event, src_port_ID, dst_port_ID)
     },
-     // getCheckX(X) {
+    //  getCheckX(X) {
     //   // 检查是否移出工作区
     //   let me = this;
     //   let x = X;

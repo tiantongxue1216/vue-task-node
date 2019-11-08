@@ -136,8 +136,8 @@ export default {
         {
           id: "node1",
           name: "节点1",
-          positionX: 115,
-          positionY: 180,
+          positionX: 0,
+          positionY: 0,
           status: 'TASK_STATE_RUNNING',
           inPorts: [
             {
@@ -253,7 +253,6 @@ export default {
   methods: {
     //节点和锚点事件
     handleNodeStartMove(data) {
-      console.log('app拖动开始')
       this.node_start_move_info = {
         id: data.node.id,
         positionX: event.clientX,
@@ -261,11 +260,9 @@ export default {
       }
     },
     handleNodeMove(moveData) {
-      console.log('app拖动中')
 
     },
     handleNodeMoveEnd(data) {
-      console.log('app拖动结束')
       let nodeXY = {};
       nodeXY.x = data.event.clientX;
       nodeXY.y = data.event.clientY;
@@ -304,37 +301,22 @@ export default {
         startPort: startData,
         endPort: endData
       });
-      console.log('addpath事件触发后',this.paths)
     },
     handleNodeMouseRightClick: function(event, node) {
-      console.log("节点右击事件", event, node);
     },
 
     //连线事件
     handlePathMouseRightClick(event, portData) {
-      console.log("鼠标右击路径事件", event, portData);
     },
     handlePathMouseEnter(event, portData) {
-      console.log(
-        "鼠标划入路径事件",
-        event,
-        portData
-      )
     },
     handlePathMouseLeave(event, portData) {
-      console.log(
-        "鼠标划出路径事件",
-        event,
-        portData
-      );
     },
     handlePathClick: function(event, portData) {
-      console.log("鼠标左击路径事件", event, portData)
     },
 
     //工作区事件
     handleAreaMouseRightClick: function(event, id) {
-      console.log("mouseMenu", "on-mouse", "工作区右击事件", event, id);
       this.clearSelectedPaths = true
       //改变节点status
       for(let item of this.nodes) {
@@ -393,7 +375,6 @@ export default {
       this.nodes.push(newNode);
     },
     updateCompleted: function() {
-      console.log("updateCompleted!!");
       // 重新加载路径
       this.$refs.curve.vReload();
     },
