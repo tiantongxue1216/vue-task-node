@@ -1,6 +1,6 @@
 <template>
   <g :id="'_' + node.id" :transform="'translate('+node.positionX+','+node.positionY+')'">
-    <foreignObject width="117" height="26">
+    <foreignObject width="117" height="26" :class="classes" ref="node">
       <div
         @contextmenu.prevent="handleNodeRightClick"
         @mouseenter="handleNodeMouseEnter"
@@ -12,8 +12,7 @@
         @click.stop="handleNodeSelect($event,node,$refs.node)"
         width="117"
         height="26"
-        ref="node"
-        :class="classes">
+        >
         <!-- <span :class="iconCls +' '+ [node.icon ? node.icon : 'task-icon-53']"></span> -->
         <span :class="nameCls" ref="name">{{node.name}}</span>
         <span :class="statusCls +' '+ stateCls(node.status)"></span>
