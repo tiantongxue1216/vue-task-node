@@ -62,6 +62,10 @@ export default {
   name: "App",
   data() {
     return {
+      contextMenu: {
+        showContextmenu: false,
+        curNodeId: ""
+      },
       isRunningWatcher: false,
       modelnodes: [
         {
@@ -247,9 +251,22 @@ export default {
           ]
         }
       ],
-      paths: []
+      paths: [],
+      curRenameNodeId: ''
     };
   },
+  computed: {
+    testfocus() {
+      return this.$store.getters.getTestfocus
+    },
+  },
+  watch: {
+    testfocus() {
+      console.log('watch testfocus变化了')
+      this.setNodeProp(this.curRenameNodeId, 'rename', false)
+    },
+  },
+  
   methods: {
     //节点和锚点事件
     handleNodeStartMove(data) {
@@ -307,7 +324,22 @@ export default {
       console.log('addpath事件触发后',this.paths)
     },
     handleNodeMouseRightClick: function(event, node) {
-      console.log("节点右击事件", event, node);
+      console.log('右键点击了组件节点', node)
+      this.curRenameNodeId = node.id
+      this.setNodeProp(node.id, 'rename', true)
+      // this.contextMenu.showContextmenu = false
+      console.log('contextMenuClick', name)
+    },
+    //查找相应id的node并改变该node的属性
+    setNodeProp(id, prop, value) {
+      console.log(id,prop,value, 'setNodeProp')
+      for(let node of this.nodes) {
+        if(id == node.id) {
+          console.log(node.id,prop, value)
+          this.$set(node, prop, value);
+          break
+        }
+      }
     },
 
     //连线事件
@@ -369,7 +401,14 @@ export default {
     },
     workAreaClickFn() {
     },
-    mouseWheel(event, data) {},
+    mouseWheel(event, data) {
+      console.log('滚动鼠标')
+      if (event.wheelDelta > 0) {
+        this.zoomIn();
+      } else {
+        this.zoomOut()
+      }
+    },
     zoomIn(event) {
       this.ini_config.scaling.ZoomX = this.ini_config.scaling.ZoomX + 0.1;
       this.ini_config.scaling.ZoomY = this.ini_config.scaling.ZoomY + 0.1;

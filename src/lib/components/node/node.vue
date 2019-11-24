@@ -1,6 +1,6 @@
 <template>
   <g
-  :transform="'translate('+node.positionX+','+node.positionY+')'"
+  :transform="'translate('+getCheckX(node.positionX)+','+getCheckY(node.positionY)+')'"
   :class="classes"
 >
   <g transform="scale(1,1)" class="pane-scalable">

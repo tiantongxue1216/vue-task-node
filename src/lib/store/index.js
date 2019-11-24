@@ -1,6 +1,7 @@
 import { start } from "pretty-error";
 
 const state = {
+  testfocus: false,
   vi_pathing_data: {
     isShow: false
   },
@@ -35,6 +36,9 @@ const state = {
 
 }
 const getters = {
+  getTestfocus () {
+    return state.testfocus
+  },
   getViPathingData () {
     return state.vi_pathing_data
   },
@@ -68,6 +72,9 @@ const getters = {
 
 }
 const mutations = {
+  setTestfocus(state, data) {
+    state.testfocus = !state.testfocus
+  },
    //new
   setEdgeData(state, data) {
     state.edge_data = data

@@ -18,6 +18,8 @@
         <span :class="nameCls" ref="name">{{node.name}}</span>
         <span :class="statusCls +' '+ stateCls(node.status)"></span>
       </div>
+      <!-- <div v-if="node.rename && this.rename_is_effective" style="z-index:999999999999"> -->
+      <rename v-if="node.rename" />
     </foreignObject>
     <in-port v-for="(item,index) in node.inPorts" :pid="item.id" :type="item.type" :typeId="item.typeId" :portNum="node.inPorts.length" v-on:on-add-path='addPath' :isConnected = "item.isConnected" :key="'in'+ '_' + index"></in-port>
     <out-port v-for="(item, index) in node.outPorts" :pid="item.id" :type="item.type" :typeId="item.typeId" :portNum="node.outPorts.length" :key="'out'+ '_' + index"></out-port>
@@ -27,12 +29,14 @@
 <script>
 import InPort from "../../port/inport.vue";
 import OutPort from "../../port/outport.vue";
+import rename from "./rename"
 
 const prefixCls = "task-common-node";
 export default {
   components: {
     OutPort,
     InPort,
+    rename,
   },
   name: "CommonNode",
   data() {
@@ -43,6 +47,7 @@ export default {
       },
       x: 0,
       y: 0,
+      rename_is_effective: true,
     };
   },
   props: {
@@ -65,6 +70,12 @@ export default {
         type: [String, Number],
         default: "ready"
       },
+      rename: {
+        type: Boolean,
+        default() {
+          return false
+        }
+      },
       inPorts: {
         type: Array,
         default: []
@@ -84,6 +95,7 @@ export default {
     }
   },
   computed: {
+    
     classes() {
       return [`${prefixCls}`];
     },
@@ -124,7 +136,7 @@ export default {
     this.$emit("updateTem", "VDom加载完成！");
   },
   mounted() {
-
+   
     let self = this
     let nodeDom = Snap('#' + '_' + this.node.id)
     nodeDom.click(function(){

@@ -78,19 +78,20 @@ export default {
       return [`${prefixCls}`];
     },
     areaStyles() {
-      let style = {};
-      if (this.isCssInUnit(this.width) >= 0) {
-        style.width = this.width;
-      } else {
-        style.width = `${this.width}px`;
-      }
-      if (this.isCssInUnit(this.height) >= 0) {
-        style.height = this.height;
-      } else {
-        style.height = `${this.height}px`;
-      }
-      return style;
-    }
+    //   let style = {};
+    //   if (this.isCssInUnit(this.width) >= 0) {
+    //     style.width = this.width;
+    //   } else {
+    //     style.width = `${this.width}px`;
+    //   }
+    //   if (this.isCssInUnit(this.height) >= 0) {
+    //     style.height = this.height;
+    //   } else {
+    //     style.height = `${this.height}px`;
+    //   }
+    //   return style;
+    // }
+  },
   },
   mounted: function() {
     let self = this;
