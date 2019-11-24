@@ -1,6 +1,6 @@
 <template>
   <g :id="'_' + node.id" :transform="'translate('+node.positionX+','+node.positionY+')'">
-    <foreignObject width="117" height="26">
+    <foreignObject width="117" height="26" :class="classes" ref="node">
       <div
         @contextmenu.prevent="handleNodeRightClick"
         @mouseenter="handleNodeMouseEnter"
@@ -12,8 +12,7 @@
         @click.stop="handleNodeSelect($event,node,$refs.node)"
         width="117"
         height="26"
-        ref="node"
-        :class="classes">
+        >
         <!-- <span :class="iconCls +' '+ [node.icon ? node.icon : 'task-icon-53']"></span> -->
         <span :class="nameCls" ref="name">{{node.name}}</span>
         <span :class="statusCls +' '+ stateCls(node.status)"></span>
@@ -28,6 +27,7 @@
 
 <script>
 import InPort from "../../port/inport.vue";
+// import mixinsTool from "../../../mixins/tool";
 import OutPort from "../../port/outport.vue";
 import rename from "./rename"
 
@@ -39,6 +39,7 @@ export default {
     rename,
   },
   name: "CommonNode",
+  // mixins: [mixinsTool],
   data() {
     return {
       state: "",
@@ -126,7 +127,6 @@ export default {
           node.classList.add(this.isRunningCls)
       }else {
           node.classList.remove(this.isRunningCls)
-        console.log('isRunningWatcher is false')
       }
     },
     showTooltip(value) {
@@ -140,7 +140,6 @@ export default {
     let self = this
     let nodeDom = Snap('#' + '_' + this.node.id)
     nodeDom.click(function(){
-      console.log('点击了节点', nodeDom.getBBox())
     })
     // nodeDom.drag(this.nodeOnmove, this.nodeOnstart, this.nodeOnend)
     // nodeDom.mouseup(function() {
@@ -149,7 +148,6 @@ export default {
   },
   methods: {
      dragStart: function(event) {
-      console.log('33333333',this.node)
       let data = {
         event,
         node: this.node
@@ -161,7 +159,6 @@ export default {
       this.$emit('on-node-move', event)
     },
     dragEnd: function(event) {
-      console.log('拖动结束')
       // if(this.node_can_move) {
         let data = {
           event,
@@ -174,19 +171,15 @@ export default {
     },
 
     handleNodeSelect(event, node, ref) {
-      console.log('节点被选中')
       this.$emit("on-node-select", event, node, ref)
     },
     handleNodeRightClick(event) {
-      console.log('鼠标右击节点',event)
       this.$emit("on-node-mouse-right-click", event, this.node)
     },
     handleNodeMouseEnter(event) {
-      console.log('mouse enter', event)
       this.$emit("on-mouse-enter", event)
     },
     handleNodeMouseLeave(event) {
-      console.log('mouse leave',event)
       this.$emit("on-mouse-leave", event)
     },
     // nodeOnstart() {
@@ -228,6 +221,8 @@ export default {
           return "task-icon-waiting";
         case "TASK_STATE_ERROR":
           return "task-icon-failed";
+        case "TASK_STATE_NOTCONFIG":
+          return "task-icon-notConfig"
         default:
           return "";
       }
@@ -236,7 +231,7 @@ export default {
     addPath: function (event, src_port_ID, dst_port_ID) {
       this.$emit('on-add-path',event, src_port_ID, dst_port_ID)
     },
-     // getCheckX(X) {
+    //  getCheckX(X) {
     //   // 检查是否移出工作区
     //   let me = this;
     //   let x = X;

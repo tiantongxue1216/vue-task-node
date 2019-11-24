@@ -119,7 +119,6 @@ export default {
       return this.lpath
     },
     mouseFn (event) {
-      console.log('右击连线')
       event.stopPropagation()
       this.$emit('on-path-mouse-right-click', event, this.portData)
     },

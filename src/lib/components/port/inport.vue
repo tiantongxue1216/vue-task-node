@@ -13,7 +13,8 @@ export default {
       stroke: '#808080',
       fill: '#fff',
       stroke_width: 1,
-      transformData: ''
+      transformData: '',
+      mouseHasDown: false,
     }
   },
   props: {
@@ -73,12 +74,20 @@ export default {
   mounted() {
     let self = this
     let port = Snap('#' + '_'+this.pid)
+    port.mousedown(function() {
+      self.mouseHasDown = true
+    })
     port.mouseup(function(e,x,y) {
-      self.r = 4
-      self.stroke_width = 1
-      self.stroke = "#808080"
-      self.$store.commit('setIfReload')
-      self.$emit('on-add-path',e,self.src_port_ID,self.pid)
+      if(self.mouseHasDown) {
+        self.mouseHasDown = false
+        return
+      }else {
+        self.r = 4
+        self.stroke_width = 1
+        self.stroke = "#808080"
+        self.$store.commit('setIfReload')
+        self.$emit('on-add-path',e,self.src_port_ID,self.pid)
+      }
     })
     port.hover(function() {
       self.r = 6

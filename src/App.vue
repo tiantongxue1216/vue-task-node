@@ -1,10 +1,9 @@
 <template>
   <div id="app">
-    <div class="hello" style="text-align: center">
-      <div class="node-model cell-left">
-        <ul>
+      <div class="node-model">
+        <ul style="list-style:none">
           <li
-            style="border-bottom: 2px solid aliceblue;"
+            style="border-bottom: 2px solid aliceblue;list-style:none"
             v-for="nodeM in nodeModels"
             :key="nodeM.id"
           >
@@ -14,10 +13,10 @@
           </li>
         </ul>
       </div>
-      <div class="cell-right">
+      <div class="cell-right" id="workAreaCon">
         <task-work-area
-          width="100%"
-          height="100%"
+          :width="width"
+          :height="height"
           :id="work_id"
           :ini="ini_config"
           v-on:on-add-nodemodel="onAddNodeModel"
@@ -52,7 +51,6 @@
           </template>
         </task-work-area>
       </div>
-    </div>
   </div>
 </template>
 
@@ -140,8 +138,8 @@ export default {
         {
           id: "node1",
           name: "节点1",
-          positionX: 115,
-          positionY: 180,
+          positionX: 0,
+          positionY: 0,
           status: 'TASK_STATE_RUNNING',
           inPorts: [
             {
@@ -215,7 +213,7 @@ export default {
           id: "node5",
           name: "节点555555555555",
           positionX: 420,
-          positionY: 420,
+          positionY: 1000,
           status: 'TASK_STATE_READY',
           inPorts: [
             {
@@ -229,9 +227,9 @@ export default {
         {
           id: "node6",
           name: "节点6",
-          positionX: 720,
-          positionY: 220,
-          status: 'TASK_STATE_RUNNING',
+          positionX: 1420,
+          positionY: 740,
+          status: 'TASK_STATE_NOTCONFIG',
           inPorts: [
             {
               id: "node6_1",
@@ -252,7 +250,17 @@ export default {
         }
       ],
       paths: [],
-      curRenameNodeId: ''
+      curRenameNodeId: '',
+      width: 0,
+      height: 0,
+    };
+  },
+  mounted() {
+    let self = this
+    this.setSvgWH()
+
+    window.onresize = function() {
+      self.setSvgWH()
     };
   },
   computed: {
@@ -270,7 +278,6 @@ export default {
   methods: {
     //节点和锚点事件
     handleNodeStartMove(data) {
-      console.log('app拖动开始')
       this.node_start_move_info = {
         id: data.node.id,
         positionX: event.clientX,
@@ -278,11 +285,9 @@ export default {
       }
     },
     handleNodeMove(moveData) {
-      console.log('app拖动中')
 
     },
     handleNodeMoveEnd(data) {
-      console.log('app拖动结束')
       let nodeXY = {};
       nodeXY.x = data.event.clientX;
       nodeXY.y = data.event.clientY;
@@ -321,7 +326,6 @@ export default {
         startPort: startData,
         endPort: endData
       });
-      console.log('addpath事件触发后',this.paths)
     },
     handleNodeMouseRightClick: function(event, node) {
       console.log('右键点击了组件节点', node)
@@ -344,29 +348,16 @@ export default {
 
     //连线事件
     handlePathMouseRightClick(event, portData) {
-      console.log("鼠标右击路径事件", event, portData);
     },
     handlePathMouseEnter(event, portData) {
-      console.log(
-        "鼠标划入路径事件",
-        event,
-        portData
-      )
     },
     handlePathMouseLeave(event, portData) {
-      console.log(
-        "鼠标划出路径事件",
-        event,
-        portData
-      );
     },
     handlePathClick: function(event, portData) {
-      console.log("鼠标左击路径事件", event, portData)
     },
 
     //工作区事件
     handleAreaMouseRightClick: function(event, id) {
-      console.log("mouseMenu", "on-mouse", "工作区右击事件", event, id);
       this.clearSelectedPaths = true
       //改变节点status
       for(let item of this.nodes) {
@@ -432,38 +423,44 @@ export default {
       this.nodes.push(newNode);
     },
     updateCompleted: function() {
-      console.log("updateCompleted!!");
       // 重新加载路径
       this.$refs.curve.vReload();
     },
+    setSvgWH() {
+      let xArray = this.nodes.map(item => {
+        return item.positionX
+      })
+      let yArray = this.nodes.map(item => {
+        return item.positionY
+      })
+      let workAreaCon = document.getElementById('workAreaCon')
+      if(Math.max(... xArray) + 100 <= workAreaCon.width) {
+        this.width = workAreaCon.width
+      }else {
+        this.width = Math.max(... xArray) + 200
+      }
+      if(Math.max(... yArray) + 100 <= workAreaCon.height) {
+        this.height = workAreaCon.height
+      }else {
+        this.height = Math.max(... yArray) + 100
+      }
+
+    }
   }
 };
 </script>
 
 <style lang="less">
 .node-model {
+  display: inline-block;
   background-color: #eee;
   width: 140px;
-  height: 500px;
 }
-.cell-left {
-  float: left;
-}
-.cell-fight {
-  float: left;
-}
-.demo-line {
-  width: 140px;
-  height: 26px;
-  border: none;
-}
-.demo-btn {
-  width: 48%;
-  background-color: #fff;
-  border: 1px solid #eee;
-  font-size: 14px;
-  line-height: 26px;
-  cursor: pointer;
+.cell-right {
+  display: inline-block;
+  width: calc(~"100vw - 500px");
+  height: calc(~"100vh - 100px");
+  margin-left: 200px;
 }
 // @import "lib/styles/index.less";
 /*#app {*/

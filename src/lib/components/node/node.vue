@@ -100,11 +100,9 @@ export default {
       // this.$emit("on-drag-end", event, this.node);
     },
     handleMouseOver() {
-      console.log('handleMouseOver')
       this.showToolTip = true
     },
     handleMouseLeave() {
-      console.log('mouvseLeave')
       this.showToolTip = false
     },
     getCheckX(X) {

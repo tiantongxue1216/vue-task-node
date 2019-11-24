@@ -8,20 +8,19 @@
     @drop.prevent="onAddNodeModel"
     @mousewheel="onMouseWheel"
     @click="handleAreaClick"
+    id="svgCon"
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"
       xmlns:xlink="http://www.w3.org/1999/xlink"
       version="1.1"
-      :width="svgWidth"
-      :height="svgHeight"
+      :width="width"
+      :height="height"
       :id="id"
     >
-      <!-- <g> -->
-        <!-- <g> -->
-          <slot />
-        <!-- </g> -->
-      <!-- </g> -->
+      <g>
+        <slot />
+      </g>
     </svg>
   </div>
 </template>
@@ -35,7 +34,9 @@ export default {
   data() {
     return {
       svgWidth: 1000,
-      svgHeight: 500
+      svgHeight: 500,
+      scrollTop: 0,
+      scrollLeft: 0,
     };
   },
   props: {
@@ -71,41 +72,25 @@ export default {
         this.$store.dispatch("setViConfig", newIni);
       },
       deep: true
-    }
+    },
   },
   computed: {
     classes() {
       return [`${prefixCls}`];
     },
     areaStyles() {
-    //   let style = {};
-    //   if (this.isCssInUnit(this.width) >= 0) {
-    //     style.width = this.width;
-    //   } else {
-    //     style.width = `${this.width}px`;
-    //   }
-    //   if (this.isCssInUnit(this.height) >= 0) {
-    //     style.height = this.height;
-    //   } else {
-    //     style.height = `${this.height}px`;
-    //   }
-    //   return style;
-    // }
-  },
+      let style = {};
+      style.width = '100%'
+      style.height = '100%'
+      return style;
+    },
   },
   mounted: function() {
-    let self = this;
-    this.setSvgHW(self);
-    window.onresize = function() {
-      self.setSvgHW(self);
-      // self.$root.$children[0].restoreAppEchoWindowResize();
-    };
-    // let svg = Snap('#'+this.id)
-    // svg.drag(this.onmove,this.onstart,this.onend)
-    // // svg.drag()
-    // svg.click(function(e,x,y){
-    //   // console.log('点击了画布', svg.getBBox(),e.clientX, e.clientY, e)
-    // })
+    let self = this
+    document.getElementById('svgCon').addEventListener('scroll', function(e) {
+      self.scrollLeft = e.target.scrollLeft
+      self.scrollTop = e.target.scrollTop
+    })
   },
   methods: {
     setSvgHW: function(me) {
@@ -142,16 +127,10 @@ export default {
       let node = event.dataTransfer.getData("nodemodel");
       let scalin = this.$store.getters.getViConfig.scaling;
       if (node) {
-        let nodeObj = JSON.parse(node);
-        let ref = this.$refs.svgArea;
-        nodeObj.positionX = (
-          (event.clientX - this.getContainersLeft(ref)) /
-          scalin.ZoomX
-        ).toFixed(1);
-        nodeObj.positionY = (
-          (event.clientY - this.getContainersTop(ref)) /
-          scalin.ZoomY
-        ).toFixed(1);
+        let nodeObj = JSON.parse(node)
+        let ref = this.$refs.svgArea
+        nodeObj.positionX = event.layerX + this.scrollLeft
+        nodeObj.positionY = event.layerY + this.scrollTop
         this.$emit("on-add-nodemodel", event, nodeObj);
       }
     },
